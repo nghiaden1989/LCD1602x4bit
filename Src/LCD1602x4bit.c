@@ -13,7 +13,7 @@ static LCD_PIN_TypeDef RS,EN,D4,D5,D6,D7;
 
 
 void setPin(LCD_PIN_TypeDef *Struct,uint8_t GPIO_Pin);
-void pinConfig(LCD_PIN_TypeDef *rs,LCD_PIN_TypeDef *en,LCD_PIN_TypeDef *d4,LCD_PIN_TypeDef *d5,LCD_PIN_TypeDef *d6,LCD_PIN_TypeDef *d7);
+void pinConfig(void);
 void lcd_write_4bit_data(uint8_t data4b);
 
 
@@ -21,42 +21,42 @@ void lcd_write_4bit_data(uint8_t data4b);
 
 //---------------------------------------------------------------------------------Configure Pin For LCD---------------------------------------------------------------------------------//
 
-void pinConfig(LCD_PIN_TypeDef *rs,LCD_PIN_TypeDef *en,LCD_PIN_TypeDef *d4,LCD_PIN_TypeDef *d5,LCD_PIN_TypeDef *d6,LCD_PIN_TypeDef *d7)
+void pinConfig(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();	         // enable clock of GPIOA and GPIOB
 
-	GPIO_InitStruct.Pin = rs->PIN;
+	GPIO_InitStruct.Pin = RS.PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(rs->PORT, &GPIO_InitStruct);             // initialize RS PIN
-	GPIO_InitStruct.Pin = en->PIN;
+	HAL_GPIO_Init(RS.PORT, &GPIO_InitStruct);             // initialize RS PIN
+	GPIO_InitStruct.Pin = EN.PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(en->PORT, &GPIO_InitStruct);             // initialize EN PIN
-	GPIO_InitStruct.Pin = d4->PIN;
+	HAL_GPIO_Init(EN.PORT, &GPIO_InitStruct);             // initialize EN PIN
+	GPIO_InitStruct.Pin = D4.PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(d4->PORT, &GPIO_InitStruct);             // initialize D4 PIN
-	GPIO_InitStruct.Pin = d5->PIN;
+	HAL_GPIO_Init(D4.PORT, &GPIO_InitStruct);             // initialize D4 PIN
+	GPIO_InitStruct.Pin = D5.PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(d5->PORT, &GPIO_InitStruct);             // initialize D5 PIN
-	GPIO_InitStruct.Pin = d6->PIN;
+	HAL_GPIO_Init(D5.PORT, &GPIO_InitStruct);             // initialize D5 PIN
+	GPIO_InitStruct.Pin = D6.PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(d6->PORT, &GPIO_InitStruct);             // initialize D6 PIN
-	GPIO_InitStruct.Pin = d7->PIN;
+	HAL_GPIO_Init(D6.PORT, &GPIO_InitStruct);             // initialize D6 PIN
+	GPIO_InitStruct.Pin = D7.PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(d7->PORT, &GPIO_InitStruct);             // initialize D7 PIN
+	HAL_GPIO_Init(D7.PORT, &GPIO_InitStruct);             // initialize D7 PIN
 }
 void setPin(LCD_PIN_TypeDef *Struct,uint8_t GPIO_Pin)
 {
@@ -86,7 +86,7 @@ void lcd_init (uint8_t RS_PIN,uint8_t EN_PIN,uint8_t D4_PIN,uint8_t D5_PIN,uint8
 	setPin(&D5,D5_PIN);
 	setPin(&D6,D6_PIN);
 	setPin(&D7,D7_PIN);
-	pinConfig(&RS,&EN,&D4,&D5,&D6,&D7);
+	pinConfig();
 	/*--- initialize Delay_us Function ----*/
 	Delay_Us_Init();
 	/*-----------LCD Command Init----------*/
