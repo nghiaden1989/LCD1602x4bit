@@ -12,9 +12,6 @@ int main(void)
   MX_GPIO_Init();
 	
 	lcd_init(PB1,PB2,PB4,PB5,PB6,PB7);  // RS,EN,D4,D5,D6,D7   RW connect to GND
-	HAL_Delay(100);
-	lcd_clear_display();
-	HAL_Delay(100);
 	lcd_goto_XY(1,4);
 	lcd_send_string("LCD 1602");
 	lcd_goto_XY(2,0);

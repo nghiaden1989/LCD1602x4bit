@@ -92,18 +92,19 @@ void lcd_init (uint8_t RS_PIN,uint8_t EN_PIN,uint8_t D4_PIN,uint8_t D5_PIN,uint8
 	/*-----------LCD Command Init----------*/
 	lcd_send_cmd (0x33); /* set 4-bits interface */
 	lcd_send_cmd (0x32);
-	HAL_Delay(50);
+	HAL_Delay(30);
 	lcd_send_cmd (0x28); /* start to set LCD function */
-	HAL_Delay(50);
+	HAL_Delay(30);
+	lcd_send_cmd (0x06); /* set entry mode */
+	HAL_Delay(30);
+	lcd_send_cmd (0x0c); /* set display to on */	
+	HAL_Delay(30);
+	lcd_send_cmd (0x02); /* move cursor to home and set data address to 0 */
+	HAL_Delay(30);
+	lcd_send_cmd (0x80);
+	HAL_Delay(30);
 	lcd_send_cmd (0x01); /* clear display */
 	HAL_Delay(50);
-	lcd_send_cmd (0x06); /* set entry mode */
-	HAL_Delay(50);
-	lcd_send_cmd (0x0c); /* set display to on */	
-	HAL_Delay(50);
-	lcd_send_cmd (0x02); /* move cursor to home and set data address to 0 */
-	HAL_Delay(50);
-	lcd_send_cmd (0x80);
 }
 
 
