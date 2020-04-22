@@ -13,7 +13,7 @@ static LCD_PIN_TypeDef RS,EN,D4,D5,D6,D7;
 
 
 void setPin(LCD_PIN_TypeDef *Struct,uint8_t GPIO_Pin);
-void pinConfig(void);
+void pinConfig(LCD_PIN_TypeDef *rs,LCD_PIN_TypeDef *en,LCD_PIN_TypeDef *d4,LCD_PIN_TypeDef *d5,LCD_PIN_TypeDef *d6,LCD_PIN_TypeDef *d7);
 void lcd_write_4bit_data(uint8_t data4b);
 
 
@@ -21,42 +21,42 @@ void lcd_write_4bit_data(uint8_t data4b);
 
 //---------------------------------------------------------------------------------Configure Pin For LCD---------------------------------------------------------------------------------//
 
-void pinConfig(void)
+void pinConfig(LCD_PIN_TypeDef *rs,LCD_PIN_TypeDef *en,LCD_PIN_TypeDef *d4,LCD_PIN_TypeDef *d5,LCD_PIN_TypeDef *d6,LCD_PIN_TypeDef *d7)
 {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();	         // enable clock of GPIOA and GPIOB
 
-	GPIO_InitStruct.Pin = RS.PIN;
+	GPIO_InitStruct.Pin = rs->PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(RS.PORT, &GPIO_InitStruct);             // initialize RS PIN
-	GPIO_InitStruct.Pin = EN.PIN;
+	HAL_GPIO_Init(rs->PORT, &GPIO_InitStruct);             // initialize RS PIN
+	GPIO_InitStruct.Pin = en->PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(EN.PORT, &GPIO_InitStruct);             // initialize EN PIN
-	GPIO_InitStruct.Pin = D4.PIN;
+	HAL_GPIO_Init(en->PORT, &GPIO_InitStruct);             // initialize EN PIN
+	GPIO_InitStruct.Pin = d4->PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(D4.PORT, &GPIO_InitStruct);             // initialize D4 PIN
-	GPIO_InitStruct.Pin = D5.PIN;
+	HAL_GPIO_Init(d4->PORT, &GPIO_InitStruct);             // initialize D4 PIN
+	GPIO_InitStruct.Pin = d5->PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(D5.PORT, &GPIO_InitStruct);             // initialize D5 PIN
-	GPIO_InitStruct.Pin = D6.PIN;
+	HAL_GPIO_Init(d5->PORT, &GPIO_InitStruct);             // initialize D5 PIN
+	GPIO_InitStruct.Pin = d6->PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(D6.PORT, &GPIO_InitStruct);             // initialize D6 PIN
-	GPIO_InitStruct.Pin = D7.PIN;
+	HAL_GPIO_Init(d6->PORT, &GPIO_InitStruct);             // initialize D6 PIN
+	GPIO_InitStruct.Pin = d7->PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(D7.PORT, &GPIO_InitStruct);             // initialize D7 PIN
+	HAL_GPIO_Init(d7->PORT, &GPIO_InitStruct);             // initialize D7 PIN
 }
 void setPin(LCD_PIN_TypeDef *Struct,uint8_t GPIO_Pin)
 {
@@ -86,25 +86,24 @@ void lcd_init (uint8_t RS_PIN,uint8_t EN_PIN,uint8_t D4_PIN,uint8_t D5_PIN,uint8
 	setPin(&D5,D5_PIN);
 	setPin(&D6,D6_PIN);
 	setPin(&D7,D7_PIN);
-	pinConfig();
+	pinConfig(&RS,&EN,&D4,&D5,&D6,&D7);
 	/*--- initialize Delay_us Function ----*/
 	Delay_Us_Init();
 	/*-----------LCD Command Init----------*/
 	lcd_send_cmd (0x33); /* set 4-bits interface */
 	lcd_send_cmd (0x32);
-	HAL_Delay(30);
+	HAL_Delay(50);
 	lcd_send_cmd (0x28); /* start to set LCD function */
-	HAL_Delay(30);
-	lcd_send_cmd (0x06); /* set entry mode */
-	HAL_Delay(30);
-	lcd_send_cmd (0x0c); /* set display to on */	
-	HAL_Delay(30);
-	lcd_send_cmd (0x02); /* move cursor to home and set data address to 0 */
-	HAL_Delay(30);
-	lcd_send_cmd (0x80);
-	HAL_Delay(30);
+	HAL_Delay(50);
 	lcd_send_cmd (0x01); /* clear display */
 	HAL_Delay(50);
+	lcd_send_cmd (0x06); /* set entry mode */
+	HAL_Delay(50);
+	lcd_send_cmd (0x0c); /* set display to on */	
+	HAL_Delay(50);
+	lcd_send_cmd (0x02); /* move cursor to home and set data address to 0 */
+	HAL_Delay(50);
+	lcd_send_cmd (0x80);
 }
 
 
@@ -130,7 +129,7 @@ void lcd_send_data(uint8_t data)
 	Delay_us(100);
 	EN.PORT->BRR=EN.PIN;
 	EN.PORT->BSRR=EN.PIN;
-	lcd_write_4bit_data(data&0x0f);     //send 4 high-bit
+	lcd_write_4bit_data(data&0x0f);     //send 4 low-bit
 	Delay_us(100);
 	EN.PORT->BRR=EN.PIN;
 }
@@ -143,7 +142,7 @@ void lcd_send_cmd(uint8_t cmd)
 	Delay_us(100);
 	EN.PORT->BRR=EN.PIN;
 	EN.PORT->BSRR=EN.PIN;
-	lcd_write_4bit_data(cmd&0x0f);     //send 4 high-bit
+	lcd_write_4bit_data(cmd&0x0f);     //send 4 low-bit
 	Delay_us(100);
 	EN.PORT->BRR=EN.PIN;
 }
@@ -171,9 +170,12 @@ void lcd_goto_XY (int row, int col)
 	}
 	lcd_send_cmd(pos_Addr);
 }
-void lcd_make_syms(char dat[])
+void lcd_make_syms(uint8_t stt,uint8_t dat[])
 {
-	lcd_send_cmd(0x40);
+	if(stt>5)
+	stt=5;
+	uint8_t add=0x40+8*stt;
+	lcd_send_cmd(add);
 char i;
 	for(i=0;i<8;i++)
 	{
